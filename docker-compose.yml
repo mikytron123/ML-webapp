@@ -1,0 +1,9 @@
+services:
+  web:
+    build: Blazor
+    ports:
+      - "8080:90"
+  api:
+    build: Python
+    ports:
+      - "80:80"
