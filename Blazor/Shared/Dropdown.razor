@@ -1,0 +1,34 @@
+﻿@inject ILogger<Dropdown> Logger
+
+<p>@($"{id}:")</p>
+<InputSelect type="text" id=@id @bind-Value=@Bindval>
+    <option value="" selected disabled hidden>Choose here</option>
+    @foreach (var item in choices)
+    {
+        <option>@(item.ToString())</option>
+    }
+</InputSelect>
+
+@code {
+    [Parameter]
+    public string? id {get;set;}
+    [Parameter]
+    public EventCallback<string> bindvalChanged {get;set;}
+
+    [Parameter]
+    public List<string>? choices {get;set;}
+    
+    [Parameter]
+    public string Bindval {
+        get{
+            return _bindval;
+        }set{
+            if (_bindval!=value){
+            _bindval=value;
+            bindvalChanged.InvokeAsync(value);
+            }
+        }
+    }
+
+    private string? _bindval;
+}

@@ -1,0 +1,30 @@
+﻿@inherits LayoutComponentBase
+@inject ILogger<MainLayout> Logger
+<div class="page" id="wholepage">
+    @if(@collapseNavMenu){
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+    }
+    <div class="top-row ps-3 navbar navbar-dark" id="topbar">
+        <button type="button" title="Navigation menu" class="navbar-toggler btn btn-info btn-outline-info" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+
+    <main>
+        <article>
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+    private bool collapseNavMenu = false;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+
+    }
+}

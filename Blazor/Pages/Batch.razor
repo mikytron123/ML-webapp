@@ -1,0 +1,75 @@
+@page "/batch"
+@using Microsoft.Extensions.Logging
+@using Newtonsoft.Json
+@using System.Text
+@using System;
+@using System.Threading.Tasks
+@inject HttpClient Http
+@inject ILogger<Batch> Logger
+
+
+<PageTitle>Batch Prediction</PageTitle>
+
+<h1>Batch Prediction</h1>
+<div>
+    <span>Please upload a csv for batch prediction</span>
+</div>
+
+<div>
+    <InputFile OnChange="@LoadFiles" accept="text/*" id="inputfile" aria-label="Upload File" />
+</div>
+
+@if (loaded)
+{
+    <div class="predtable">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                @foreach (var prop in predsclass.data[0].GetType().GetProperties())
+                    {
+                        <th>@prop.Name</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var data in predsclass.data)
+                {
+                    <tr>
+                        @foreach (var item in data.GetType().GetProperties())
+                        {
+                            <td>@item.GetValue(data)</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    bool loaded = false;
+    Root predsclass = new Root();
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        var filename = e.File.Name;
+        var ms = new MemoryStream();
+        using (var stream = file.OpenReadStream())
+        {
+            using (var formData = new MultipartFormDataContent())
+            {
+                await stream.CopyToAsync(ms);
+                ms.Position = 0;
+                var barray = new ByteArrayContent(ms.ToArray());
+                formData.Add(barray, "file", filename);
+                var req = await Http.PostAsync("http://localhost:80/uploadfile", formData);
+                var strdata = await req.Content.ReadAsStringAsync();
+                predsclass = JsonConvert.DeserializeObject<Root>(strdata) ?? throw new NullReferenceException("Api is null");
+                loaded = true;
+            }
+        }
+
+    }
+
+}

@@ -1,0 +1,5 @@
+.predtable{
+    overflow-y: auto;
+    overflow-x: auto;
+    height: 500px;
+}
