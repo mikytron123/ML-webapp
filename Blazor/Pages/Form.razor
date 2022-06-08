@@ -11,26 +11,32 @@
 <div>
     <span>Please fill out the form to make predictions</span>
 </div>
+
 <EditForm Model="@Model" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary /> 
-    <Dropdown id="Age" @bind-Bindval="Model.age" choices=@(Model.ages)>
-    </Dropdown> 
-    <Dropdown id="Workclass" @bind-Bindval="Model.workclass" choices=@(Model.workcat)> 
-    </Dropdown> 
+    <fieldset>
+        <legend>Categorical</legend>
+        <Dropdown id="Age" @bind-Bindval="Model.age" choices=@(Model.ages)>
+        </Dropdown> 
+        <Dropdown id="Workclass" @bind-Bindval="Model.workclass" choices=@(Model.workcat)> 
+        </Dropdown> 
 
-    <Dropdown id="Education" @bind-bindval=@Model.education choices=@Model.educationcat></Dropdown>
-    <Dropdown id="MartialStatus" @bind-bindval=@Model.marital_status choices=@Model.status></Dropdown>
-    <Dropdown id="Occupation" @bind-bindval=@Model.occupation choices=@Model.occ></Dropdown>
-    <Dropdown id="Relationship" @bind-bindval=@Model.relationship choices=@Model.relation></Dropdown>
-    <Dropdown id="Race" @bind-bindval=@Model.race choices=@Model.racecat></Dropdown>
-    <Dropdown id="Sex" @bind-bindval=@Model.sex choices=@Model.sexcat></Dropdown>
-    <Dropdown id="Capitalgain" @bind-bindval=@Model.capitalgain choices=@Model.capitalgaincat></Dropdown>
-    <Dropdown id="Capitalloss" @bind-bindval=@Model.capitalloss choices=@Model.capitalgaincat></Dropdown>
-    <Dropdown id="Hoursperweek" @bind-bindval=Model.hoursperweek choices=@Model.capitalgaincat></Dropdown>
-     
-    <p>fnlwgt:</p>
-    <InputNumber id="fnlwgt" @bind-Value="Model.fnlwgt"/>
+        <Dropdown id="Education" @bind-bindval=@Model.education choices=@Model.educationcat></Dropdown>
+        <Dropdown id="MartialStatus" @bind-bindval=@Model.marital_status choices=@Model.status></Dropdown>
+        <Dropdown id="Occupation" @bind-bindval=@Model.occupation choices=@Model.occ></Dropdown>
+        <Dropdown id="Relationship" @bind-bindval=@Model.relationship choices=@Model.relation></Dropdown>
+        <Dropdown id="Race" @bind-bindval=@Model.race choices=@Model.racecat></Dropdown>
+        <Dropdown id="Sex" @bind-bindval=@Model.sex choices=@Model.sexcat></Dropdown>
+        <Dropdown id="Capitalgain" @bind-bindval=@Model.capitalgain choices=@Model.capitalgaincat></Dropdown>
+        <Dropdown id="Capitalloss" @bind-bindval=@Model.capitalloss choices=@Model.capitalgaincat></Dropdown>
+        <Dropdown id="Hoursperweek" @bind-bindval=Model.hoursperweek choices=@Model.capitalgaincat></Dropdown>
+    </fieldset>
+    <fieldset class="numbercontainer">
+        <legend>Numeric:</legend>
+        <label id="fnlwgt">fnlwgt:</label>
+        <InputNumber id="fnlwgt" @bind-Value="Model.fnlwgt"/>
+    </fieldset>
     <button type="submit">Submit</button>
 </EditForm> 
 <div>

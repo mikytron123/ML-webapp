@@ -1,14 +1,14 @@
 ﻿@inject ILogger<Dropdown> Logger
-
-<p>@($"{id}:")</p>
-<InputSelect type="text" id=@id @bind-Value=@Bindval>
-    <option value="" selected disabled hidden>Choose here</option>
-    @foreach (var item in choices)
-    {
-        <option>@(item.ToString())</option>
-    }
-</InputSelect>
-
+<div class="selectdiv">
+    <label for=@id>@($"{id}:")</label>
+    <InputSelect type="text" id=@id @bind-Value=@Bindval>
+        <option value="" selected disabled hidden>Choose here</option>
+        @foreach (var item in choices)
+        {
+            <option>@(item.ToString())</option>
+        }
+    </InputSelect>
+</div>
 @code {
     [Parameter]
     public string? id {get;set;}
