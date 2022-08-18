@@ -32,6 +32,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+[screen-capture.webm](https://user-images.githubusercontent.com/25290130/185510132-fcdc7035-d491-4888-a16f-583980b98f5c.webm)
+
 This is a webapp created using C# Blazor for classifying whether income exceeds 50k/year. The backend uses a FastAPI endpoint for making predictions from a single row or batch predictions from a file. The Frontend runs client-side using Blazor WebAssembly. A SVC model is used for predictions.
 
 ### Built With
