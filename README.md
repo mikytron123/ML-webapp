@@ -55,9 +55,7 @@ Install Docker for your OS
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-1. ```docker-compose up --build api```
-
-2. ```docker-compose up --build web```
+1. ```docker-compose up ```
 
 3. Navigate to "localhost:8080" in your browser
 
