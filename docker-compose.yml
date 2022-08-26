@@ -3,6 +3,8 @@ services:
     build: Blazor
     ports:
       - "8080:90"
+    depends_on:
+      - "api"
   api:
     build: Python
     ports:
