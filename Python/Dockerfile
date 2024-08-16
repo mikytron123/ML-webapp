@@ -1,12 +1,18 @@
-FROM python:3.8
+ARG PYTHON_VERSION=3.11
+FROM python:${PYTHON_VERSION}-slim AS base
 
-WORKDIR /code
- 
-COPY ./requirements.txt /code/requirements.txt
- 
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
- 
-COPY ./app /code/app
+ENV PYTHONDONTWRITEBYTECODE=1
 
-WORKDIR /code/app 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+RUN --mount=type=cache,target=/root/.cache/pip \
+    --mount=type=bind,source=requirements.txt,target=requirements.txt \
+    python -m pip install -r requirements.txt
+
+COPY . .
+
+EXPOSE 80
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
