@@ -1,0 +1,65 @@
+@page "/enumform"
+@using Microsoft.Extensions.Logging
+@using Newtonsoft.Json
+@using System.Text
+@using System.Threading.Tasks
+@inject HttpClient Http
+@inject ILogger<EnumForm> Logger
+    
+<PageTitle>Form</PageTitle>
+
+<h1>Form</h1>
+<div>
+    <span>Please fill out the form to make predictions</span>
+</div>
+
+<EditForm Model="@item" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary /> 
+    <fieldset>
+        <legend>Categorical</legend>
+        <EnumDropdown TEnum="Item.AgeEnum" id="Age" @bind-Bindval="item.Age">
+        </EnumDropdown>
+        <EnumDropdown TEnum=Item.WorkclassEnum id="Workclass" @bind-Bindval="item.Workclass"> 
+        </EnumDropdown> 
+
+        <EnumDropdown TEnum="Item.EducationEnum" id="Education" @bind-bindval=@item.Education></EnumDropdown>
+        <EnumDropdown TEnum=Item.MaritalStatusEnum id="MartialStatus" @bind-bindval=@item.MaritalStatus></EnumDropdown>
+        <EnumDropdown TEnum=Item.OccupationEnum id="Occupation" @bind-bindval=@item.Occupation></EnumDropdown>
+        <EnumDropdown TEnum=Item.RelationshipEnum id="Relationship" @bind-bindval=@item.Relationship></EnumDropdown>
+        <EnumDropdown TEnum=Item.RaceEnum id="Race" @bind-bindval=@item.Race></EnumDropdown>
+        <EnumDropdown TEnum=Item.SexEnum id="Sex" @bind-bindval=@item.Sex></EnumDropdown>
+        <EnumDropdown TEnum=Item.CapitalgainEnum id="Capitalgain" @bind-bindval=@item.Capitalgain></EnumDropdown>
+        <EnumDropdown TEnum=Item.CapitallossEnum id="Capitalloss" @bind-bindval=@item.Capitalloss></EnumDropdown>
+        <EnumDropdown TEnum=Item.HoursperweekEnum id="Hoursperweek" @bind-bindval=item.Hoursperweek></EnumDropdown>
+    </fieldset>
+    <fieldset class="numbercontainer">
+        <legend>Numeric:</legend>
+        <label id="fnlwgt">fnlwgt:</label>
+        <InputNumber id="fnlwgt" @bind-Value="item.Fnlwgt"/>
+    </fieldset>
+    <button type="submit">Submit</button>
+</EditForm> 
+<div>
+@if (@result is not null){
+    <p>Prediction is @result</p>
+}
+</div>
+@code {
+
+    private Item item = new();
+
+    private string? result;
+
+    private async Task HandleValidSubmit()
+    {
+        result=null;
+        var json = JsonConvert.SerializeObject(item);
+        var payload = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await Http.PostAsync("http://localhost:8000/predict",payload);
+        var strdata = await response.Content.ReadAsStringAsync();
+        var jsonobj = JsonConvert.DeserializeObject<ModelPrediction>(strdata);
+        result = Utility.GetEnumMemberAttrValue(typeof(ModelPrediction.PredictionEnum),jsonobj.Prediction);
+    }
+
+}

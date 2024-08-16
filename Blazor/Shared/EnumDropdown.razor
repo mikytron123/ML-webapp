@@ -1,0 +1,30 @@
+@using System.Runtime.Serialization
+@inject ILogger<EnumDropdown<TEnum>> Logger
+@typeparam TEnum where TEnum : System.Enum
+<div class="selectdiv">
+    <label for=@id>@($"{id}:")</label>
+    <InputSelect TValue="TEnum" type="text" id=@id Value=@Bindval ValueChanged="@((s)=>UpdateVal(s))"
+        ValueExpression="@(()=>Bindval)">
+        <option value="" selected disabled hidden>Choose here</option>
+        @foreach (var item in Enum.GetValues(typeof(TEnum)))
+        {
+            <option value=@item>@(Utility.GetEnumMemberAttrValue(typeof(TEnum), item))</option>
+        }
+    </InputSelect>
+</div>
+@code {
+
+    [Parameter]
+    public string? id { get; set; }
+    [Parameter]
+    public EventCallback<TEnum> bindvalChanged { get; set; }
+
+    [Parameter]
+    public TEnum? Bindval { get; set; }
+    private TEnum? _bindval;
+
+    private async Task UpdateVal(TEnum e)
+    {
+        await bindvalChanged.InvokeAsync(e);
+    }
+}

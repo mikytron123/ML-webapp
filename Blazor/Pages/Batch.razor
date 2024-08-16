@@ -25,14 +25,14 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                @foreach (var prop in predsclass.data[0].GetType().GetProperties())
+                @foreach (var prop in predsclass[0].GetType().GetProperties())
                     {
                         <th>@prop.Name</th>
                     }
                 </tr>
             </thead>
             <tbody>
-                @foreach (var data in predsclass.data)
+                @foreach (var data in predsclass)
                 {
                     <tr>
                         @foreach (var item in data.GetType().GetProperties())
@@ -48,7 +48,7 @@
 
 @code {
     bool loaded = false;
-    Root predsclass = new Root();
+    List<BatchPrediction> predsclass = new ();
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
@@ -63,9 +63,9 @@
                 ms.Position = 0;
                 var barray = new ByteArrayContent(ms.ToArray());
                 formData.Add(barray, "file", filename);
-                var req = await Http.PostAsync("http://localhost:80/uploadfile", formData);
+                var req = await Http.PostAsync("http://localhost:8000/uploadfile", formData);
                 var strdata = await req.Content.ReadAsStringAsync();
-                predsclass = JsonConvert.DeserializeObject<Root>(strdata) ?? throw new NullReferenceException("Api is null");
+                predsclass = JsonConvert.DeserializeObject<List<BatchPrediction>>(strdata) ?? throw new NullReferenceException("Api is null");
                 loaded = true;
             }
         }
