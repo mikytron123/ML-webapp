@@ -6,6 +6,34 @@ services:
     depends_on:
       - "api"
   api:
+    env_file:
+      - .env
     build: Python
     ports:
-      - "80:80"
+      - "8000:8000"
+  
+  jaeger:
+    env_file:
+      - .env
+    container_name: jaeger
+    ports:
+        - 6831:6831/udp
+        - 5778:5778
+        - 16686:16686
+        - 4318:4318
+        - 14269:14269
+    image: jaegertracing/all-in-one:latest
+  
+  prometheus:
+    env_file:
+      - .env
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    image: prom/prometheus:latest
+    command:
+    - --config.file=/etc/prometheus/prometheus.yml 
+    - --enable-feature=otlp-write-receive
+
+

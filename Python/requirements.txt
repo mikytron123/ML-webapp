@@ -10,18 +10,27 @@ anyio==4.4.0
     # via starlette
 asgiref==3.8.1
     # via opentelemetry-instrumentation-asgi
+certifi==2024.7.4
+    # via requests
+charset-normalizer==3.3.2
+    # via requests
 click==8.1.7
     # via uvicorn
 deprecated==1.2.14
     # via
     #   opentelemetry-api
+    #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-semantic-conventions
 fastapi==0.112.1
     # via -r requirements.in
+googleapis-common-protos==1.63.2
+    # via opentelemetry-exporter-otlp-proto-http
 h11==0.14.0
     # via uvicorn
 idna==3.7
-    # via anyio
+    # via
+    #   anyio
+    #   requests
 importlib-metadata==8.0.0
     # via opentelemetry-api
 joblib==1.4.2
@@ -38,12 +47,20 @@ opentelemetry-api==1.26.0
     # via
     #   -r requirements.in
     #   opentelemetry-distro
+    #   opentelemetry-exporter-otlp-proto-http
+    #   opentelemetry-exporter-prometheus
     #   opentelemetry-instrumentation
     #   opentelemetry-instrumentation-asgi
     #   opentelemetry-instrumentation-fastapi
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
 opentelemetry-distro==0.47b0
+    # via -r requirements.in
+opentelemetry-exporter-otlp-proto-common==1.26.0
+    # via opentelemetry-exporter-otlp-proto-http
+opentelemetry-exporter-otlp-proto-http==1.26.0
+    # via -r requirements.in
+opentelemetry-exporter-prometheus==0.47b0
     # via -r requirements.in
 opentelemetry-instrumentation==0.47b0
     # via
@@ -54,8 +71,15 @@ opentelemetry-instrumentation-asgi==0.47b0
     # via opentelemetry-instrumentation-fastapi
 opentelemetry-instrumentation-fastapi==0.47b0
     # via -r requirements.in
+opentelemetry-proto==1.26.0
+    # via
+    #   opentelemetry-exporter-otlp-proto-common
+    #   opentelemetry-exporter-otlp-proto-http
 opentelemetry-sdk==1.26.0
-    # via opentelemetry-distro
+    # via
+    #   opentelemetry-distro
+    #   opentelemetry-exporter-otlp-proto-http
+    #   opentelemetry-exporter-prometheus
 opentelemetry-semantic-conventions==0.47b0
     # via
     #   opentelemetry-instrumentation-asgi
@@ -67,6 +91,12 @@ opentelemetry-util-http==0.47b0
     #   opentelemetry-instrumentation-fastapi
 pandas==2.2.2
     # via -r requirements.in
+prometheus-client==0.20.0
+    # via opentelemetry-exporter-prometheus
+protobuf==4.25.4
+    # via
+    #   googleapis-common-protos
+    #   opentelemetry-proto
 pydantic==2.8.2
     # via
     #   -r requirements.in
@@ -79,6 +109,8 @@ python-multipart==0.0.9
     # via -r requirements.in
 pytz==2024.1
     # via pandas
+requests==2.32.3
+    # via opentelemetry-exporter-otlp-proto-http
 scikit-learn==1.5.1
     # via -r requirements.in
 scipy==1.14.0
@@ -99,6 +131,8 @@ typing-extensions==4.12.2
     #   pydantic-core
 tzdata==2024.1
     # via pandas
+urllib3==2.2.2
+    # via requests
 uvicorn==0.30.6
     # via -r requirements.in
 wrapt==1.16.0
