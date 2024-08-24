@@ -11,6 +11,12 @@ services:
     build: Python
     ports:
       - "8000:8000"
+    depends_on:
+      - jaeger
+      - prometheus
+      - grafana
+    volumes:
+      - "log_dir:/app/monitoring/"
   
   jaeger:
     env_file:
@@ -34,6 +40,29 @@ services:
     image: prom/prometheus:latest
     command:
     - --config.file=/etc/prometheus/prometheus.yml 
-    - --enable-feature=otlp-write-receive
+  
+  grafana:
+    ports:
+      - "3000:3000"
+    image: grafana/grafana-oss
+  
+  fluentbit:
+    image: fluent/fluent-bit
+    command: -c /fluent-bit/etc/fluent-bit.yaml -R /fluent-bit/etc/parser.conf
+    volumes:
+      - "log_dir:/app/monitoring/"
+      - ./FluentBit/:/fluent-bit/etc/
+  quickwit:
+    image: quickwit/quickwit
+    entrypoint: ["/usr/bin/bash","/quickwit/qwdata/config/entrypoint.sh"]
+    # command: index create --index-config /quickwit/index-config.yaml
+    volumes:
+      - "./Quickwit/:/quickwit/qwdata/config"
+
+    ports:
+      - "7280:7280"
+
+volumes:
+    log_dir: 
 
 

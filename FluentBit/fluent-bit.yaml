@@ -1,0 +1,17 @@
+pipeline:
+  inputs:
+  - name: tail
+    path: ./app/monitoring/*.log
+  outputs:
+    - name: stdout
+      match: "*"
+  outputs:
+    - name: http
+      match: '*'
+      host: quickwit
+      port: 7280
+      URI: /api/v1/fluentbit-logs/ingest
+      Format: json_lines
+      Json_date_key: timestamp
+      Json_date_format: epoch
+      
