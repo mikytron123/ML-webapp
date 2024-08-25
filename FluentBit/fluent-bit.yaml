@@ -2,16 +2,25 @@ pipeline:
   inputs:
   - name: tail
     path: ./app/monitoring/*.log
+    Refresh_Interval: 5
+  filters:
+  - name: parser
+    parser: json_parser
+    match: "*"
+    key_name: log
+    reserve_data: on
   outputs:
     - name: stdout
       match: "*"
+      format: json_lines
   outputs:
     - name: http
-      match: '*'
+      match: "*"
       host: quickwit
       port: 7280
-      URI: /api/v1/fluentbit-logs/ingest
-      Format: json_lines
-      Json_date_key: timestamp
-      Json_date_format: epoch
+      uri: /api/v1/fluentbit-logs/ingest?commit=force
+      format: json_lines
+      json_date_key: timestamp
+      json_date_format: epoch
+      # json_date_format:  iso8601
       

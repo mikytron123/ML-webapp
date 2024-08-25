@@ -65,7 +65,7 @@ structlog.configure(
         structlog.processors.add_log_level,
         structlog.processors.StackInfoRenderer(),
         structlog.dev.set_exc_info,
-        structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
+        structlog.processors.TimeStamper(fmt=None, utc=True),
         structlog.processors.JSONRenderer(),
     ],
     logger_factory=structlog.WriteLoggerFactory(file=Path("/app/monitoring/data.log").with_suffix(".log").open("wt")),
