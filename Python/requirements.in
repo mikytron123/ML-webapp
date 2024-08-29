@@ -1,0 +1,16 @@
+fastapi
+joblib
+pandas
+numpy<2
+pydantic
+scikit_learn
+uvicorn
+opentelemetry-distro
+opentelemetry-instrumentation-fastapi
+opentelemetry-api
+opentelemetry-exporter-otlp-proto-http
+python-multipart
+opentelemetry-exporter-prometheus
+structlog
+
+
