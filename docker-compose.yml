@@ -14,7 +14,7 @@ services:
     depends_on:
       - jaeger
       - prometheus
-      - grafana
+      - fluentbit
     volumes:
       - "log_dir:/app/monitoring/"
   
@@ -31,34 +31,35 @@ services:
     image: jaegertracing/all-in-one:latest
   
   prometheus:
+    build: ./Prometheus
     env_file:
       - .env
     ports:
       - "9090:9090"
-    volumes:
-      - ./Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    image: prom/prometheus:latest
-    command:
-    - --config.file=/etc/prometheus/prometheus.yml 
   
   grafana:
+    depends_on:
+      - prometheus
+      - jaeger
+      - quickwit
     ports:
       - "3000:3000"
     image: grafana/grafana-oss
   
   fluentbit:
-    image: fluent/fluent-bit
-    command: -c /fluent-bit/etc/fluent-bit.yaml -R /fluent-bit/etc/parser.conf
+    build: ./FluentBit
     volumes:
       - "log_dir:/app/monitoring/"
-      - ./FluentBit/:/fluent-bit/etc/
-  quickwit:
-    image: quickwit/quickwit
-    entrypoint: ["/usr/bin/bash","/quickwit/qwdata/config/entrypoint.sh"]
-    # command: index create --index-config /quickwit/index-config.yaml
-    volumes:
-      - "./Quickwit/:/quickwit/qwdata/config"
 
+  quickwit:
+    build: ./Quickwit
+    #    image: quickwit/quickwit
+    #    entrypoint: ["/usr/bin/bash","/quickwit/qwdata/config/entrypoint.sh"]
+    # command: index create --index-config /quickwit/index-config.yaml
+    #    volumes:
+    #      - "./Quickwit/:/quickwit/qwdata/config"
+    depends_on:
+      - fluentbit
     ports:
       - "7280:7280"
 
