@@ -29,7 +29,15 @@ from shared.api_models import BatchPrediction, Item, ModelPrediction
 
 start_http_server(port=8001)
 
-JAEGER_HOST = os.getenv("JAEGER_HOST", default="localhost")
+JAEGER_HOST = os.getenv("JAEGER_HOST")
+JAEGER_PORT = os.getenv("JAEGER_PORT")
+
+if JAEGER_HOST is None:
+    raise Exception("env JAEGER_HOST must be set")
+
+if JAEGER_PORT is None:
+    raise Exception("env JAEGER_PORT must be set")
+
 
 path = os.getcwd()
 if path not in sys.path:
@@ -39,7 +47,7 @@ resource = Resource(attributes={SERVICE_NAME: "fastapi-ml"})
 
 traceProvider = TracerProvider(resource=resource)
 processor = BatchSpanProcessor(
-    OTLPSpanExporter(endpoint=f"http://{JAEGER_HOST}:4318/v1/traces")
+    OTLPSpanExporter(endpoint=f"http://{JAEGER_HOST}:{JAEGER_PORT}/v1/traces")
 )
 traceProvider.add_span_processor(processor)
 trace.set_tracer_provider(traceProvider)
@@ -116,6 +124,7 @@ def predict(item: Item) -> ModelPrediction:
         log.info("preprocessing json", role="feature", **data)
         df = pd.DataFrame(data, index=[1])
         df = df.rename(columns={"marital_status": "marital-status"})
+
     with tracer.start_as_current_span("prediction", record_exception=True):
         pred = y_encoder.inverse_transform(model.predict(df))
         num_predictions.add(amount=1)
@@ -132,14 +141,18 @@ async def create_upload_file(file: UploadFile):
         df = pd.read_csv(file.file)
         cat_cols: List[str] = model.named_steps["preprocessor"].transformers[1][-1]
         num_cols: List[str] = model.named_steps["preprocessor"].transformers[0][-1]
+
         for col in df.columns:
             if col in cat_cols:
                 df[col] = df[col].astype("str")
             elif col in num_cols:
                 df[col] = pd.to_numeric(df[col]).round(3)
+
         df = df.dropna(subset=cat_cols + num_cols)
+
         for row in df.to_dict(orient="records"):
             log.info("preprocessing file", **row, role="feature")
+
     with tracer.start_as_current_span("prediction", record_exception=True):
         preds = model.predict(df[cat_cols + num_cols])
         df["prediction"] = y_encoder.inverse_transform(preds)
