@@ -2,15 +2,14 @@
 @inject ILogger<EnumDropdown<TEnum>> Logger
 @typeparam TEnum where TEnum : System.Enum
 <div class="selectdiv">
-    <label for=@id>@($"{id}:")</label>
-    <InputSelect TValue="TEnum" type="text" id=@id Value=@Bindval ValueChanged="@((s)=>UpdateVal(s))"
-        ValueExpression="@(()=>Bindval)">
-        <option value="" selected disabled hidden>Choose here</option>
+    <FluentSelect TOption="string" id=@id Label=@($"{id}") Value="_selectedValue" ValueChanged="@((s)=>UpdateOption(s))" Placeholder="Choose Here"
+     Required=true> 
         @foreach (var item in Enum.GetValues(typeof(TEnum)))
         {
-            <option value=@item>@(Utility.GetEnumMemberAttrValue(typeof(TEnum), item))</option>
+            <FluentOption Value="@(Enum.GetName(typeof(TEnum),item))">@(Utility.GetEnumMemberAttrValue(typeof(TEnum),item)) </FluentOption>
         }
-    </InputSelect>
+
+    </FluentSelect>
 </div>
 @code {
 
@@ -21,10 +20,23 @@
 
     [Parameter]
     public TEnum? Bindval { get; set; }
-    private TEnum? _bindval;
+
+    string? _selectedValue {get;set;}
+
+    public async Task UpdateOption(string e){
+        var res = Enum.Parse(typeof(TEnum),e);
+        
+        if (res is null){
+            return;
+        }
+        Bindval = (TEnum)res;
+        await bindvalChanged.InvokeAsync(Bindval);
+    }
 
     private async Task UpdateVal(TEnum e)
     {
+        Bindval=e;
         await bindvalChanged.InvokeAsync(e);
+        Bindval = e;
     }
 }

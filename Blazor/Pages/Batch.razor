@@ -16,42 +16,43 @@
 </div>
 
 <div>
-    <InputFile OnChange="@LoadFiles" accept="text/*" id="inputfile" aria-label="Upload File" />
+    <FluentInputFile DragDropZoneVisible=true OnInputFileChange="@LoadFiles" accept="text/*" id="inputfile" aria-label="Upload File">
+    <FluentButton Id="UploadButton" Appearance="Appearance.Accent">
+    Upload files
+    </FluentButton>
+    </FluentInputFile>
+
 </div>
 
 @if (loaded)
 {
     <div class="predtable">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                @foreach (var prop in predsclass[0].GetType().GetProperties())
-                    {
-                        <th>@prop.Name</th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var data in predsclass)
-                {
-                    <tr>
-                        @foreach (var item in data.GetType().GetProperties())
-                        {
-                            <td>@item.GetValue(data)</td>
-                        }
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+    <FluentDataGrid Items="@predsclass">
+        <PropertyColumn Property="@(p => p.Age)" Sortable="true" />
+        <PropertyColumn Property="@(p => p.Workclass)" Sortable="true" />
+        <PropertyColumn Property="@(p => p.Fnlwgt)" Sortable="true" />
+        <PropertyColumn Property="@(p => p.Education)" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="@(p => p.MaritalStatus)" Sortable="true" />
+        <PropertyColumn Property="@(p => p.Occupation)" Sortable="true" />
+        <PropertyColumn Property="@(p => p.Relationship)" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="@(p => p.Race)" Sortable="true" />
+        <PropertyColumn Property="@(p => p.Sex)" Sortable="true" />
+        <PropertyColumn Property="@(p => p.Capitalgain)" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="@(p => p.Capitalloss)" Sortable="true" />
+        <PropertyColumn Property="@(p => p.Hoursperweek)" Sortable="true" />
+        <PropertyColumn Property="@(p => p.Prediction)" Sortable="true"></PropertyColumn>
+        
+    </FluentDataGrid>
+</div>
 }
 
 @code {
     bool loaded = false;
-    List<BatchPrediction> predsclass = new ();
+    IQueryable<BatchPrediction> predsclass = new List<BatchPrediction>().AsQueryable();
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
+
         var file = e.File;
         var filename = e.File.Name;
         var ms = new MemoryStream();
@@ -65,7 +66,8 @@
                 formData.Add(barray, "file", filename);
                 var req = await Http.PostAsync("http://localhost:8000/uploadfile", formData);
                 var strdata = await req.Content.ReadAsStringAsync();
-                predsclass = JsonConvert.DeserializeObject<List<BatchPrediction>>(strdata) ?? throw new NullReferenceException("Api is null");
+                predsclass = JsonConvert.DeserializeObject<List<BatchPrediction>>(strdata).AsQueryable() ?? throw new
+                NullReferenceException("Api is null");
                 loaded = true;
             }
         }

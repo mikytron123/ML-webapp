@@ -16,7 +16,7 @@
 <EditForm Model="@item" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary /> 
-    <fieldset>
+    <FluentStack Orientation="Orientation.Vertical">
         <legend>Categorical</legend>
         <EnumDropdown TEnum="Item.AgeEnum" id="Age" @bind-Bindval="item.Age">
         </EnumDropdown>
@@ -32,14 +32,13 @@
         <EnumDropdown TEnum=Item.CapitalgainEnum id="Capitalgain" @bind-bindval=@item.Capitalgain></EnumDropdown>
         <EnumDropdown TEnum=Item.CapitallossEnum id="Capitalloss" @bind-bindval=@item.Capitalloss></EnumDropdown>
         <EnumDropdown TEnum=Item.HoursperweekEnum id="Hoursperweek" @bind-bindval=item.Hoursperweek></EnumDropdown>
-    </fieldset>
-    <fieldset class="numbercontainer">
+    
         <legend>Numeric:</legend>
-        <label id="fnlwgt">fnlwgt:</label>
-        <InputNumber id="fnlwgt" @bind-Value="item.Fnlwgt"/>
-    </fieldset>
-    <button type="submit">Submit</button>
-</EditForm> 
+        <FluentNumberField Id="fnlwgt" @bind-Value="item.Fnlwgt" Label="fnlwgt:" Min="13493" Max="1490400"></FluentNumberField>
+    </FluentStack>
+    <FluentButton Type="ButtonType.Submit">Submit</FluentButton>
+</EditForm>
+
 <div>
 @if (@result is not null){
     <p>Prediction is @result</p>
