@@ -74,8 +74,8 @@ class Item(BaseModel):
 
 
 class ModelPrediction(BaseModel):
-    prediction: Literal["<=50K", ">50K"]
+    prediction: str
 
 
 class BatchPrediction(Item):
-    prediction: Literal["<=50K", ">50K"]
+    prediction: str
