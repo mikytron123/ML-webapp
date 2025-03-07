@@ -28,31 +28,12 @@ using System.ComponentModel.DataAnnotations;
 [DataContract(Name = "ModelPrediction")]
 public partial class ModelPrediction : IValidatableObject
 {
-    /// <summary>
-    /// Defines Prediction
-    /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum PredictionEnum
-    {
-        /// <summary>
-        /// Enum _50K for value: &lt;&#x3D;50K
-        /// </summary>
-        [EnumMember(Value = "<=50K")]
-        _50K = 1,
-
-        /// <summary>
-        /// Enum _50K2 for value: &gt;50K
-        /// </summary>
-        [EnumMember(Value = ">50K")]
-        _50K2 = 2
-    }
-
 
     /// <summary>
     /// Gets or Sets Prediction
     /// </summary>
     [DataMember(Name = "prediction", IsRequired = true, EmitDefaultValue = true)]
-    public PredictionEnum Prediction { get; set; }
+    public string Prediction { get; set; }
     /// <summary>
     /// Initializes a new instance of the <see cref="ModelPrediction" /> class.
     /// </summary>
@@ -62,7 +43,7 @@ public partial class ModelPrediction : IValidatableObject
     /// Initializes a new instance of the <see cref="ModelPrediction" /> class.
     /// </summary>
     /// <param name="prediction">prediction (required).</param>
-    public ModelPrediction(PredictionEnum prediction = default(PredictionEnum))
+    public ModelPrediction(string prediction = "")
     {
         this.Prediction = prediction;
     }

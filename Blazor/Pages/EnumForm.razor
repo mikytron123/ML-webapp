@@ -58,7 +58,7 @@
         var response = await Http.PostAsync("http://localhost:8000/predict",payload);
         var strdata = await response.Content.ReadAsStringAsync();
         var jsonobj = JsonConvert.DeserializeObject<ModelPrediction>(strdata);
-        result = Utility.GetEnumMemberAttrValue(typeof(ModelPrediction.PredictionEnum),jsonobj.Prediction);
+        result = jsonobj.Prediction;
     }
 
 }
